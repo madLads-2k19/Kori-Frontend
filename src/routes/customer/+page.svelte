@@ -3,7 +3,7 @@
 	import Table from '$lib/components/Table.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 
-	const columnNames: string[] = ['S.no', 'Product ID', 'Description', 'In Stock', 'Price'];
+	const columnNames: string[] = ['S.no', 'Mobile Number', 'Customer Name', 'Is Member'];
 
 	const rowValues: (string | number )[][] = [
 		[1, '12345678', 'S Rithesh', 'Yes'],
@@ -16,10 +16,10 @@
 	<div class="my-auto ...">
         <div class="mx-auto w-3/5 mt-4 mb-2 ...">
             <div class="float-left ...">
-                <TextInput label="Search Products" placeholder="Search Product by ID or name" />
+                <TextInput label="Search Customer" placeholder="Search Customer By Name" />
             </div>
             <div class="float-right ...">
-                <Button buttonText="Add Product" />
+                <Button buttonText="Add Customer" />
             </div>
             <div class="clear-both"></div>
         </div>

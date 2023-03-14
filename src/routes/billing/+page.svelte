@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Button from '../../lib/components/Button.svelte';
-	import Table from '../../lib/components/Table.svelte';
-	import TextArea from '../../lib/components/TextArea.svelte';
-	import TextInput from '../../lib/components/TextInput.svelte';
-	import Radio from '../../lib/components/Radio.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Table from '$lib/components/Table.svelte';
+	import TextArea from '$lib/components/TextArea.svelte';
+	import TextInput from '$lib/components/TextInput.svelte';
+	import Radio from '$lib/components/Radio.svelte';
 
 	const columnNames: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 
