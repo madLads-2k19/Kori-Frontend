@@ -5,16 +5,18 @@
 </script>
 
 <table
-	class="font-sans mx-auto table-fixed border-collapse border overflow-auto w-3/5 rounded-sm Lato font-light ..."
+	class="font-sans mx-auto table-fixed border-collapse border overflow-auto w-4/5 rounded-sm font-light ..."
 >
-	<tbody>
-		<tr class="bg-teal-900 text-white border ...">
+	<thead>
+		<tr class="bg-teal-600 text-white border ...">
 			{#each columnNames as columnName}
-				<td>{columnName}</td>
+				<th>{columnName}</th>
 			{/each}
 		</tr>
+	</thead>
+	<tbody>
 		{#each rowValues as row}
-			<tr class="odd:bg-teal-50 hover-bg-stone-100 ...">
+			<tr class="odd:bg-teal-50 hover:bg-teal-100 ...">
 				{#each row as rowValue}
 					<td>{rowValue}</td>
 				{/each}
@@ -24,8 +26,13 @@
 </table>
 
 <style>
+	th {
+		padding: 0.3em;
+		text-align: center;
+	}
+
 	td {
-		padding: 0.2em;
+		padding: 0.3em;
 		text-align: center;
 	}
 </style>
