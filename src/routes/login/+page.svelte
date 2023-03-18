@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import { authData } from '$lib/store/store.js';
+	import { authData } from '$lib/store/store';
 
 	let email: string = '';
 	let password: string = '';
