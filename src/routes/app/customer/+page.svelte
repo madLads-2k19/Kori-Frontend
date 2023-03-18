@@ -1,28 +1,90 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import Button from '$lib/components/Button.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
+	import { HttpMethod, defaultHttpRequest  } from '$lib/request';
+	import type { QueryParams } from '$lib/request';
 
-	const columnNames: string[] = ['S.no', 'Mobile Number', 'Customer Name', 'Is Member'];
-
-	const rowValues: (string | number)[][] = [
-		[1, '12345678', 'S Rithesh', 'Yes'],
-		[2, '12345678', 'Sheerabth', 'No'],
-		[3, '12345678', 'Bharath', 'Yes']
+	const customerTableColNames: string[] = [
+		'#',
+		'Mobile Number',
+		'Customer Name',
+		'Member',
+		'Preferred Pay Method',
+		'Points',
+		'Email'
 	];
+	const customerTableEntries: (string | number)[][] = [];
+
+	let showAddCustomerPopup: boolean = false;
+	let searchTextField: TextInput;
+
+	interface Customer {
+		email: string;
+		is_member: boolean;
+		membership_points: number;
+		address: string;
+		preferred_payment_method: string;
+		name: string;
+		phone_number: string;
+		org_id: string;
+		id: string;
+	}
+
+	async function loadCustomers() {
+		const orgId: string = '77b5028d-5082-4dab-bdba-3fdc3fa35509';
+		const params: QueryParams = {};
+		if (searchTextField.value) {
+			params['customer_name'] = searchTextField.value;
+		}
+
+		const customers = await defaultHttpRequest<Customer[]>(
+			HttpMethod.GET,
+			`https://kori-backend.azurewebsites.net/customer/v1/org/${orgId}`,
+			undefined,
+			params
+		);
+
+		customerTableEntries.length = 0;
+		for (const cust of customers) {
+			const customerEntry = [
+				customerTableEntries.length + 1,
+				cust.phone_number,
+				cust.name,
+				cust.is_member ? 'Yes' : 'No',
+				cust.preferred_payment_method,
+				cust.membership_points,
+				cust.email
+			];
+			console.log(customerEntry);
+			customerTableEntries.push(customerEntry);
+		}
+		console.log(customerTableEntries);
+	}
+
+	onMount(async () => loadCustomers());
 </script>
 
-<div class=" h-screen flex ...">
+<div class="h-screen flex ...">
 	<div class="my-auto ...">
-		<div class="mx-auto w-3/5 mt-4 mb-2 ...">
+		<div class="mx-auto w-4/5 mt-4 mb-2 ...">
 			<div class="float-left ...">
-				<TextInput label="Search Customer" placeholder="Search Customer By Name" />
+				<TextInput bind:this={searchTextField} placeholder="Search Customers" />
+			</div>
+
+			<div class="float-left ...">
+				<Button buttonText="Search" onClick={loadCustomers} />
 			</div>
 			<div class="float-right ...">
-				<Button buttonText="Add Customer" />
+				<Button
+					buttonText="Add Customer"
+					onClick={() => (showAddCustomerPopup = !showAddCustomerPopup)}
+				/>
 			</div>
 			<div class="clear-both" />
 		</div>
-		<Table {rowValues} {columnNames} />
+		<Table rowValues={customerTableEntries} columnNames={customerTableColNames} />
 	</div>
 </div>

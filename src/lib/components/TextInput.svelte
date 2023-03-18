@@ -1,3 +1,4 @@
+<svelte:options accessors/>
 <script lang="ts">
 	export let placeholder: string;
 	export let disabled: boolean = false;
