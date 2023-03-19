@@ -4,11 +4,10 @@
 	import Button from '$lib/components/Button.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import { HttpMethod, defaultHttpRequest  } from '$lib/request';
+	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import type { QueryParams } from '$lib/request';
-  	import Modal from 'svelte-simple-modal';
-	import AddCustomer from './AddCustomer.svelte'
-
+	import Modal from 'svelte-simple-modal';
+	import AddCustomer from './AddCustomer.svelte';
 
 	const customerTableColNames: string[] = [
 		'#',
@@ -81,7 +80,7 @@
 			</div>
 			<div class="float-right ...">
 				<Modal>
-					<AddCustomer/>
+					<AddCustomer />
 				</Modal>
 			</div>
 			<div class="clear-both" />

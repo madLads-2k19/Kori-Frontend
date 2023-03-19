@@ -1,6 +1,5 @@
-import { get } from 'svelte/store'
+import { get } from 'svelte/store';
 import { authData } from '$lib/store';
-
 
 export interface QueryParams {
 	[key: string]: string | number | boolean | Array<string | number | boolean>;
@@ -11,13 +10,13 @@ export interface Headers {
 }
 
 export enum HttpMethod {
-    GET = 'GET',
-    POST = 'POST',
-    PUT = 'PUT',
-    DELETE = 'DELETE',
-  }
-  
-  function convertQueryParams(params: QueryParams): string[][] {
+	GET = 'GET',
+	POST = 'POST',
+	PUT = 'PUT',
+	DELETE = 'DELETE'
+}
+
+function convertQueryParams(params: QueryParams): string[][] {
 	const result: string[][] = [];
 	for (const [key, value] of Object.entries(params)) {
 		if (Array.isArray(value)) {
@@ -58,7 +57,6 @@ export async function httpRequest<T>(
 	return responseBody;
 }
 
-
 export function authenticatedHttpRequest<T>(
 	method: HttpMethod,
 	url: string,
@@ -66,16 +64,15 @@ export function authenticatedHttpRequest<T>(
 	queryParams?: QueryParams,
 	headers?: Headers
 ): Promise<T> {
-    const requestHeaders = {...headers};
-    const authenticationData = get(authData);
-    if (typeof authenticationData.token != 'string' || authenticationData.token == ""){
+	const requestHeaders = { ...headers };
+	const authenticationData = get(authData);
+	if (typeof authenticationData.token != 'string' || authenticationData.token == '') {
 		throw new Error(`Invalid Token: ${authenticationData.token}`);
-    }
+	}
 
-    requestHeaders["Authorization"] = `BEARER ${authenticationData.token}`
-    return httpRequest(method, url, body, queryParams, requestHeaders)
+	requestHeaders['Authorization'] = `BEARER ${authenticationData.token}`;
+	return httpRequest(method, url, body, queryParams, requestHeaders);
 }
-
 
 export function defaultHttpRequest<T>(
 	method: HttpMethod,
@@ -83,6 +80,6 @@ export function defaultHttpRequest<T>(
 	body?: Record<string, string | number | boolean>,
 	queryParams?: QueryParams,
 	headers?: Headers
-): Promise<T>   {
-	return httpRequest(method, url, body, queryParams, headers)
+): Promise<T> {
+	return httpRequest(method, url, body, queryParams, headers);
 }
