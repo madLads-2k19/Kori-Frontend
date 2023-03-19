@@ -3,7 +3,7 @@
 	import Table from '$lib/components/Table.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import Radio from '$lib/components/Radio.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
 
 	const columnNames: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 
@@ -12,6 +12,9 @@
 		[1, 'Mechy Olive Oil 1 Ltr', 100, 1, 100],
 		[1, 'Bharath Ghee 1 Ltr', 100, 1, 100]
 	];
+
+	export let address: string;
+	export let deliverToHome: boolean = false;
 </script>
 
 <div class=" h-screen flex ...">
@@ -23,17 +26,17 @@
 				<TextInput placeholder="10 digit number" label="Customer Ph Number" />
 			</div>
 			<div class="float-left mr-24 ...">
-				<Radio label="Home Delivery" />
+				<Checkbox bind:checked={deliverToHome} label="Home Delivery" />
 			</div>
 			<div class="float-left ...">
-				<TextInput placeholder="Amount" label="Delivery Charges" />
+				<TextInput disabled={!deliverToHome} placeholder="Amount" label="Delivery Charges" />
 			</div>
 			<div class="clear-both ..." />
 			<div class="float-left mt-8 ...">
 				<TextInput placeholder="Discount" label="Discount Price" />
 			</div>
 			<div class="float-right mt-8 ...">
-				<TextArea placeholder="" />
+				<TextArea disabled={!deliverToHome} bind:value={address} label="Delivery Address" placeholder="Enter Delivery Address" />
 			</div>
 
 			<div class="clear-both ..." />

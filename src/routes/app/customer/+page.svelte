@@ -6,6 +6,9 @@
 	import TextInput from '$lib/components/TextInput.svelte';
 	import { HttpMethod, defaultHttpRequest  } from '$lib/request';
 	import type { QueryParams } from '$lib/request';
+  	import Modal from 'svelte-simple-modal';
+	import AddCustomer from './AddCustomer.svelte'
+
 
 	const customerTableColNames: string[] = [
 		'#',
@@ -18,7 +21,6 @@
 	];
 	const customerTableEntries: (string | number)[][] = [];
 
-	let showAddCustomerPopup: boolean = false;
 	let searchTextField: TextInput;
 
 	interface Customer {
@@ -78,10 +80,9 @@
 				<Button buttonText="Search" onClick={loadCustomers} />
 			</div>
 			<div class="float-right ...">
-				<Button
-					buttonText="Add Customer"
-					onClick={() => (showAddCustomerPopup = !showAddCustomerPopup)}
-				/>
+				<Modal>
+					<AddCustomer/>
+				</Modal>
 			</div>
 			<div class="clear-both" />
 		</div>
