@@ -9,7 +9,8 @@
 	import { authData, type AuthData } from '$lib/store';
 	import { onMount } from 'svelte';
 
-	let memberCheck: boolean;
+	export let customer: Customer;
+
 	let paymentOptions = [
 		{
 			name: 'cash',
@@ -21,19 +22,19 @@
 		}
 	];
 
-	let email: string;
-	let is_member: boolean;
-	let membership_points: number = 0;
-	let address: string;
-	let preferred_payment_method = paymentOptions[0].name;
-	let name: string;
-	let phone_number: string;
+	let email: string = customer.email;
+	let is_member: boolean = customer.is_member;
+	let membership_points: number = customer.membership_points;
+	let address: string = customer.address;
+	let preferred_payment_method = customer.preferred_payment_method;
+	let name: string = customer.name;
+	let phone_number: string = customer.phone_number;
+	let userData: AuthData;
 
 	let disableSubmit: boolean = false;
-	let customerCreationSuccess: boolean = false;
+	let customerUpdationSuccess: boolean = false;
 
 	let retry: boolean = false;
-	let userData: AuthData;
 
 	onMount(async () => {
 		userData = $authData;
@@ -53,13 +54,13 @@
 		};
 
 		await defaultHttpRequest<Customer>(
-			HttpMethod.POST,
-			`https://kori-backend.azurewebsites.net/customer/v1/${userData.org_id}`,
+			HttpMethod.PUT,
+			`https://kori-backend.azurewebsites.net/customer/v1/${customer.id}`,
 			payload,
 			undefined
 		)
-			.then((newCustomer) => {
-				customerCreationSuccess = true;
+			.then((updatedCustomer) => {
+				customerUpdationSuccess = true;
 				retry = false;
 				disableSubmit = true;
 			})
@@ -71,18 +72,18 @@
 </script>
 
 <div class="p-4">
-	<p class="text-2xl mb-4 text-teal-800">New Customer</p>
+	<p class="text-2xl mb-4 text-teal-800">Update Customer</p>
 	<div class="grid grid-cols-2 gap-x-12 gap-y-8 justify-between mb-8">
 		<TextInput bind:value={name} label="Name" placeholder="Enter Customer Name" />
 		<TextInput bind:value={email} label="Email" placeholder="Enter Email ID" />
 		<div>
 			<div class="mt-7">
-				<Checkbox bind:checked={memberCheck} label="Register as a member" />
+				<Checkbox bind:checked={is_member} label="Register as a member" />
 			</div>
 		</div>
 		<TextInput
 			bind:value={membership_points}
-			disabled={!memberCheck}
+			disabled={true}
 			label="Membership points"
 			placeholder="Enter Membership points"
 		/>
@@ -91,7 +92,12 @@
 			bind:selectedOption={preferred_payment_method}
 			label="Preferred Payment Method"
 		/>
-		<TextInput bind:value={phone_number} label="Phone Number" placeholder="Enter Phone Number" />
+		<TextInput
+			bind:value={phone_number}
+			disabled={true}
+			label="Phone Number"
+			placeholder="Enter Phone Number"
+		/>
 	</div>
 	<div class="mb-4">
 		<TextArea label="Address" bind:value={address} placeholder="Enter Address" />
@@ -99,15 +105,15 @@
 
 	{#if !disableSubmit}
 		<div class="w-24 text-center">
-			<Button onClick={addProduct} buttonText="Create" />
+			<Button onClick={addProduct} buttonText="Update" />
 		</div>
 	{/if}
 	{#if disableSubmit}
-		{#if customerCreationSuccess}
-			<p class="text-green-900">Customer Creation Success, close the popup to continue...</p>
+		{#if customerUpdationSuccess}
+			<p class="text-green-900">Customer Updation Success, close the popup to continue...</p>
 		{/if}
 	{/if}
 	{#if retry}
-		<p class="text-red-800">Customer Creation Failed, retry again</p>
+		<p class="text-red-800">Customer Updation Failed, retry again</p>
 	{/if}
 </div>

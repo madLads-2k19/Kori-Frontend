@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import { getContext } from 'svelte';
 	import AddCustomerContent from './AddCustomerContent.svelte';
