@@ -4,6 +4,7 @@
 	import type { AuthData } from '$lib/store';
 	import { authData } from '$lib/store';
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
+	import { goto } from '$app/navigation';
 
 	let email: string = '';
 	let password: string = '';
@@ -23,6 +24,7 @@
 			.then((data) => {
 				loginStatus = true;
 				authData.set(data);
+				goto('/app/billing');
 			})
 			.catch((error) => {
 				loginStatus = false;
