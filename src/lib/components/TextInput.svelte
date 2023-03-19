@@ -6,6 +6,7 @@
 	export let value: any = '';
 	export let type: string = 'text';
 	export let label: string = '';
+	export let handleKeyDown = () => {};
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;
@@ -22,5 +23,6 @@
 		{disabled}
 		use:typeAction
 		bind:value
+		on:keydown={handleKeyDown}
 	/>
 </label>
