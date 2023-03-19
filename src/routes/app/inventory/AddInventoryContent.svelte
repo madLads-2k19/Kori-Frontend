@@ -13,18 +13,21 @@
 	let retry: boolean = false;
 	function addProduct() {
 		disableSubmit = true;
-		fetch('https://kori.azurewebsites.net/product/v1/77b5028d-5082-4dab-bdba-3fdc3fa35509', {
-			method: 'POST',
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: JSON.stringify({
-				reorder_level,
-				name,
-				price,
-				measurement_unit
-			})
-		}).then((response) => {
+		fetch(
+			'https://kori-backend.azurewebsites.net/product/v1/77b5028d-5082-4dab-bdba-3fdc3fa35509',
+			{
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify({
+					reorder_level,
+					name,
+					price,
+					measurement_unit
+				})
+			}
+		).then((response) => {
 			if (response.status == 200) {
 				productCreationSuccess = true;
 				retry = false;
