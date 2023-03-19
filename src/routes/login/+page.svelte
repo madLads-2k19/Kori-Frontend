@@ -24,7 +24,7 @@
 			.then((data) => {
 				loginStatus = true;
 				authData.set(data);
-				// goto('/app/billing');
+				goto('/app/billing');
 			})
 			.catch((error) => {
 				loginStatus = false;
