@@ -1,10 +1,10 @@
 <script class="ts">
-  	import Modal from 'svelte-simple-modal';
+	import Modal from 'svelte-simple-modal';
 	import Table from '$lib/components/Table.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import AddProduct from './AddInventory.svelte';
 
-	let closeModal = false; 
+	let closeModal = false;
 
 	const columnNames = ['S.no', 'Product ID', 'Description', 'In Stock', 'Price'];
 
@@ -31,4 +31,3 @@
 		<Table {rowValues} {columnNames} />
 	</div>
 </div>
-

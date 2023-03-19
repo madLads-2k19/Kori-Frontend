@@ -3,7 +3,7 @@
 	import TextInput from '$lib/components/TextInput.svelte';
 	import { authData } from '$lib/store';
 	import type { AuthData } from '$lib/store';
-	import { HttpMethod, defaultHttpRequest  } from '$lib/request';
+	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 
 	let name: string = '';
 	let email: string = '';
@@ -17,21 +17,21 @@
 			email,
 			password,
 			permission_level: 'user'
-        }
-        defaultHttpRequest<AuthData>(
+		};
+		defaultHttpRequest<AuthData>(
 			HttpMethod.POST,
 			`https://kori-backend.azurewebsites.net/user/v1/${orgId}/signup`,
 			payload,
 			undefined
 		)
-        .then((data) => {
-            loginStatus = true;
-            authData.set(data);
-        })
-        .catch((error) => {
-            loginStatus = false;
-            console.log(error);
-        });
+			.then((data) => {
+				loginStatus = true;
+				authData.set(data);
+			})
+			.catch((error) => {
+				loginStatus = false;
+				console.log(error);
+			});
 	}
 </script>
 

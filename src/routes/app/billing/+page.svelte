@@ -36,7 +36,12 @@
 				<TextInput placeholder="Discount" label="Discount Price" />
 			</div>
 			<div class="float-right mt-8 ...">
-				<TextArea disabled={!deliverToHome} bind:value={address} label="Delivery Address" placeholder="Enter Delivery Address" />
+				<TextArea
+					disabled={!deliverToHome}
+					bind:value={address}
+					label="Delivery Address"
+					placeholder="Enter Delivery Address"
+				/>
 			</div>
 
 			<div class="clear-both ..." />
