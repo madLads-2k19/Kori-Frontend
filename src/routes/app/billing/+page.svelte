@@ -6,11 +6,17 @@
 	import DropdownInput from '$lib/components/DropdownInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Select from '$lib/components/Select.svelte';
+	import Modal from 'svelte-simple-modal';
 
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import type { StoreProduct, Customer, CreatedCustomerBill } from './models';
 	import { authData } from '$lib/store';
 	import { onMount } from 'svelte';
+
+	import GenerateBill from './GenerateBill.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import { notifications } from '$lib/components/notification';
+	import { error } from '@sveltejs/kit';
 
 	let columnNames: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 
@@ -18,6 +24,9 @@
 
 	let org_id: string = '';
 	let user_id: string = '';
+	let customerBillId: string;
+	let customer: Customer;
+
 	const store_id = 'cae271b6-da6e-411f-8822-940dbab486de';
 
 	const paymentOptions = [
@@ -53,6 +62,8 @@
 	let selectedProduct = '';
 	let selectedProductQty = 1.0;
 
+    let billFetchStatus: boolean;
+
 	function fetchStoreProducts() {
 		const reqUrl = URL + `/store_product/v1/${org_id}/store/${store_id}`;
 		defaultHttpRequest<StoreProduct[]>(HttpMethod.GET, reqUrl).then((data: StoreProduct[]) => {
@@ -67,6 +78,9 @@
 				});
 			});
 			storeProductNames = storeProductNames;
+		})
+		.catch(error => {
+			notifications.danger("Failed to fetch store product", 3000)
 		});
 	}
 
@@ -99,45 +113,37 @@
 	}
 
 	function addItem() {
-		console.log(selectedProduct);
 		if (selectedProduct.length == 0) {
-			window.alert('Please select a product to be billed');
+			notifications.danger("Failed to fetch store product", 3000)
 			return;
 		}
 		const selectedProductObject = productMap.get(selectedProduct);
 
 		if (selectedProductObject.selected) {
-			window.alert('The selected product is already in the bill');
-			return;
-		}
-		if (selectedProductQty <= 0) {
-			window.alert('Product quantity canont be non-negative');
+			notifications.danger('The selected product is already in the bill', 3000);
 			return;
 		}
 		if (selectedProductObject.stock_available < selectedProductQty) {
-			window.alert('Product quantity cannot exceed available stock');
+			notifications.danger('Product quantity cannot exceed available stock', 3000);
 			return;
 		}
 
 		selectedProductObject.selected = true;
 		selectedProductObject.selected_qty = selectedProductQty;
-
-		console.log(selectedProductObject);
-
 		renderTable();
 		selectedProduct = '';
 	}
 
 	function deleteItem() {
 		if (selectedProduct.length == 0) {
-			window.alert('Please select a product to be removed');
+			notifications.danger('Please select a product to be removed', 3000);
 			selectedProduct = '';
 			return;
 		}
 
 		const selectedProductObject = productMap.get(selectedProduct);
 		if (!selectedProductObject.selected) {
-			window.alert('The selected product is not in the bill');
+			notifications.danger('The selected product is not in the bill', 3000);
 			selectedProduct = '';
 			return;
 		}
@@ -154,6 +160,24 @@
 			product_id: product.product_id,
 			product_quantity: product.selected_qty
 		};
+	}
+
+    async function handleKeyDown(element) {
+		console.log(element.key)
+		if (element.key != 'Enter')
+			return;
+
+		const customerUrl = URL + `/customer/v1/number/${billDetails.phoneNumber}`;
+		await defaultHttpRequest<Customer>(
+			HttpMethod.GET,
+			customerUrl
+		)
+		.then(customerObject => {
+			customer = customerObject;
+		})
+		.catch(error => {
+			notifications.danger("Failed to fetch customer", 3000);
+		});
 	}
 
 	async function getBillingRequestBody() {
@@ -181,8 +205,8 @@
 
 		console.log(products_billed);
 		if (products_billed.length == 0) {
-			window.alert('No products billed');
-			return null;
+			notifications.danger("No products billed", 3000)
+			return;
 		}
 
 		let billingRequestBody = {
@@ -226,30 +250,31 @@
 	}
 
 	async function submit() {
-		console.log(productMap);
-		console.log(billOptions);
-
 		const billingUrl = URL + `/customer_bill/v1/${org_id}`;
 
 		const requestBody = await getBillingRequestBody();
-
-		if (!requestBody) return;
-		console.log(requestBody);
-
-		try {
-			const createdBill = await defaultHttpRequest<CreatedCustomerBill>(
-				HttpMethod.POST,
-				billingUrl,
-				requestBody
-			);
-		} catch (error) {
-			window.alert('Error while creating bill');
-			console.log(error);
+		if (requestBody == undefined) {
+			return;
 		}
-		window.alert('Bill Created');
+
+		await defaultHttpRequest<CreatedCustomerBill>(
+			HttpMethod.POST,
+			billingUrl,
+			requestBody
+		)
+		.then(customerBill => {
+			notifications.success("Bill created", 3000)
+			customerBillId = customerBill.id
+			billFetchStatus = true;
+		})
+		.catch(error => {
+			billFetchStatus = false;
+			notifications.danger("Failed to create bill", 3000)
+		})
 	}
 </script>
 
+<Toast />
 <div class=" h-screen flex ...">
 	<div class="my-auto ...">
 		<Table {rowValues} {columnNames} />
@@ -288,8 +313,9 @@
 
 			<div class="clear-both ..." />
 
-			<div class="float-left mr-24 ...">
+			<div class="float-left mb-10 mr-10 ...">
 				<TextInput
+					handleKeyDown={handleKeyDown}
 					placeholder="10 digit number"
 					label="Customer Ph Number"
 					bind:value={billDetails.phoneNumber}
@@ -310,6 +336,7 @@
 			<div class="clear-both ..." />
 			<div class="float-left mt-8 ...">
 				<TextInput
+					disabled={customer == undefined || !customer.is_member}
 					placeholder="Discount"
 					label="Discount Amount"
 					bind:value={billOptions.discount_price}
@@ -352,7 +379,13 @@
 			<div class="float-left mt-5">
 				<Button buttonText="Register Member/Deduct Points" />
 			</div>
-
+			<div class="float-left mt-5">
+			{#if billFetchStatus == true}
+				<Modal>
+					<GenerateBill customerBillId={customerBillId}/>
+				</Modal>
+			{/if}
+			</div>
 			<div class="clear-both" />
 		</div>
 	</div>
