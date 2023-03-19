@@ -1,40 +1,33 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import { authData } from '$lib/store/store';
+	import type { AuthData } from '$lib/store';
+	import { authData } from '$lib/store';
+	import { HttpMethod, defaultHttpRequest  } from '$lib/request';
 
 	let email: string = '';
 	let password: string = '';
-	let triedLogin: boolean = false;
-	let loginStatus: boolean = true;
+	let loginStatus: boolean | undefined = undefined;
 
 	function login() {
-		fetch('https://kori-backend.azurewebsites.net/user/v1/login', {
-			method: 'POST',
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: JSON.stringify({
-				email,
-				password
-			})
-		})
-			.then((response) => {
-				triedLogin = true;
-				if (!response.ok) {
-					loginStatus = false;
-					throw new Error('Login Failed');
-				}
-				loginStatus = true;
-				return response.json();
-			})
-			.then((data) => {
-				authData.set({ orgId: data['org_id'], userId: data['user_id'], token: data['token'] });
-			})
-			.catch((error) => {
-				loginStatus = false;
-				console.log(error);
-			});
+        const payload = {
+            email,
+            password
+        }
+        defaultHttpRequest<AuthData>(
+			HttpMethod.POST,
+			`https://kori-backend.azurewebsites.net/user/v1/login`,
+			payload,
+			undefined
+		)
+        .then((data) => {
+            loginStatus = true;
+            authData.set(data);
+        })
+        .catch((error) => {
+            loginStatus = false;
+            console.log(error);
+        });
 	}
 </script>
 
@@ -55,9 +48,9 @@
 			<div class="text-center mb-4">
 				<Button buttonText="Login" onClick={login} />
 			</div>
-			{#if triedLogin && !loginStatus}
+			{#if loginStatus == false}
 				<p class="text-red-800 text-center mb-2">Incorrect email or password!</p>
-			{:else if triedLogin && loginStatus}
+			{:else if loginStatus == true}
 				<p class="text-green-800 text-center mb-2">Login success!</p>
 			{/if}
 			<p class="text-center">

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store'
-import { authData } from '$lib/store/store';
+import { authData } from '$lib/store';
 
 
 export interface QueryParams {
