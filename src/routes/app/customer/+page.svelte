@@ -8,6 +8,7 @@
 	import type { QueryParams } from '$lib/request';
 	import Modal from 'svelte-simple-modal';
 	import AddCustomer from './AddCustomer.svelte';
+	import type { Customer } from '../billing/models';
 
 	const customerTableColNames: string[] = [
 		'#',
@@ -21,18 +22,6 @@
 	const customerTableEntries: (string | number)[][] = [];
 
 	let searchTextField: TextInput;
-
-	interface Customer {
-		email: string;
-		is_member: boolean;
-		membership_points: number;
-		address: string;
-		preferred_payment_method: string;
-		name: string;
-		phone_number: string;
-		org_id: string;
-		id: string;
-	}
 
 	async function loadCustomers() {
 		const orgId: string = '77b5028d-5082-4dab-bdba-3fdc3fa35509';
