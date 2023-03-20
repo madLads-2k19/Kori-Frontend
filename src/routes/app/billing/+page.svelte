@@ -382,9 +382,9 @@
 			<div class="float-right mb-5">
 				<label>
 					Net Total: {(
-						productTotal -
-						billOptions.discount_price +
-						(billDetails.home_delivery ? billOptions.delivery_charge : 0)
+						parseFloat(productTotal) -
+						parseFloat(billOptions.discount_price) +
+						(billDetails.home_delivery ? parseFloat(billOptions.delivery_charge) : 0)
 					).toFixed(2)}
 				</label>
 			</div>
