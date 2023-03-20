@@ -9,7 +9,7 @@
 	import Modal from 'svelte-simple-modal';
 
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
-	import type { StoreProduct, Customer, CreatedCustomerBill } from './models';
+	import type { StoreProduct, Customer, CreatedCustomerBill, Product } from './models';
 	import { authData } from '$lib/store';
 	import { onMount } from 'svelte';
 
@@ -20,7 +20,7 @@
 
 	let columnNames: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 
-	const URL = 'https://kori-backend.azurewebsites.net';
+	const DOMAIN = 'https://kori-backend.azurewebsites.net';
 
 	let org_id: string = '';
 	let user_id: string = '';
@@ -67,30 +67,34 @@
 	let billFetchStatus: boolean;
 
 	function fetchStoreProducts() {
-		const reqUrl = URL + `/store_product/v1/${org_id}/store/${store_id}`;
-		defaultHttpRequest<StoreProduct[]>(HttpMethod.GET, reqUrl)
-			.then((data: StoreProduct[]) => {
-				data.forEach((product) => {
-					storeProductNames.push(product.product.name);
-					productMap.set(product.product.name, {
-						...product.product,
-						product_id: product.product_id,
-						stock_available: product.stock_available,
-						selected: false,
-						selected_qty: 0
-					});
+		const reqUrl = DOMAIN + `/store_product/v1/${org_id}/store/${store_id}`;
+		defaultHttpRequest<StoreProduct[]>(
+			HttpMethod.GET,
+			reqUrl,
+			undefined,
+			undefined,
+			undefined
+		).then((data: StoreProduct[]) => {
+			data.forEach((product) => {
+				storeProductNames.push(product.product.name);
+				productMap.set(product.product.name, {
+					...product.product,
+					product_id: product.product_id,
+					stock_available: product.stock_available,
+					selected: false,
+					selected_qty: 0
 				});
-				storeProductNames = storeProductNames;
-			})
-			.catch((error) => {
-				notifications.danger('Failed to fetch store product');
 			});
+			storeProductNames = storeProductNames;
+		});
 	}
 
 	onMount(async () => {
 		const userAuthData = $authData;
-		org_id = userAuthData.org_id;
-		user_id = userAuthData.user_id;
+		if (userAuthData.org_id && userAuthData.user_id) {
+			org_id = userAuthData.org_id;
+			user_id = userAuthData.user_id;
+		}
 		fetchStoreProducts();
 	});
 
@@ -137,6 +141,7 @@
 		selectedProductObject.selected_qty = selectedProductQty;
 		renderTable();
 		selectedProduct = '';
+		selectedProductQty = 1;
 	}
 
 	function deleteItem() {
@@ -160,7 +165,7 @@
 		selectedProduct = '';
 	}
 
-	function getProductRequestObject(product) {
+	function getProductRequestObject(product: Product) {
 		return {
 			product_id: product.product_id,
 			product_quantity: product.selected_qty
@@ -177,7 +182,7 @@
 			return;
 		}
 
-		const customerUrl = URL + `/customer/v1/number/${billDetails.phoneNumber}`;
+		const customerUrl = DOMAIN + `/customer/v1/number/${billDetails.phoneNumber}`;
 		await defaultHttpRequest<Customer>(HttpMethod.GET, customerUrl)
 			.then((customerObject) => {
 				newCustomer = false;
@@ -209,7 +214,7 @@
 		}
 
 		let customerObject;
-		const customerUrl = URL + `/customer/v1/number/${billDetails.phoneNumber}`;
+		const customerUrl = DOMAIN + `/customer/v1/number/${billDetails.phoneNumber}`;
 		await defaultHttpRequest<Customer>(HttpMethod.GET, customerUrl)
 			.then((customer) => {
 				customerObject = customer;
@@ -249,7 +254,7 @@
 
 		if (billDetails.home_delivery) {
 			if (billOptions.delivery_address.length == 0) {
-				notifications.danger('Invalid devliery address');
+				notifications.danger('Invalid delivery address');
 				return;
 			}
 			if (billOptions.delivery_charge < 0) {
@@ -265,7 +270,7 @@
 	}
 
 	async function submit() {
-		const billingUrl = URL + `/customer_bill/v1/${org_id}`;
+		const billingUrl = DOMAIN + `/customer_bill/v1/${org_id}`;
 
 		const requestBody = await getBillingRequestBody();
 		if (requestBody == undefined) {
