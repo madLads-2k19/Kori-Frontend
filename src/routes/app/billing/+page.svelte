@@ -14,7 +14,6 @@
 	import { onMount } from 'svelte';
 
 	import GenerateBill from './GenerateBill.svelte';
-	import Toast from '$lib/components/Toast.svelte';
 	import { notifications } from '$lib/components/notification';
 	import AddCustomer from '../customer/AddCustomer.svelte';
 	import EditCustomer from '../customer/EditCustomer.svelte';
@@ -283,7 +282,6 @@
 	}
 </script>
 
-<Toast />
 <div class=" h-screen flex ...">
 	<div class="my-auto ...">
 		<Table {rowValues} {columnNames} />
