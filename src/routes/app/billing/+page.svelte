@@ -10,27 +10,27 @@
 
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import type { StoreProduct, Customer, CreatedCustomerBill, Product } from './models';
-	import { authData } from '$lib/store';
 	import { onMount } from 'svelte';
 
 	import GenerateBill from './GenerateBill.svelte';
 	import { notifications } from '$lib/components/notification';
 	import AddCustomer from '../customer/AddCustomer.svelte';
 	import EditCustomer from '../customer/EditCustomer.svelte';
+	import { userData } from '$lib/localStore';
 
 	let columnNames: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 
 	const DOMAIN = 'https://kori-backend.azurewebsites.net';
 
-	let org_id: string = '';
-	let user_id: string = '';
+	let orgId: string = '';
+	let userId: string = '';
 	let customerBillId: string;
 	let customer: Customer;
 	let allowDiscount: boolean = false;
 	let newCustomer: boolean;
 	let membershipPoints: number;
 
-	const store_id = 'cae271b6-da6e-411f-8822-940dbab486de';
+	let selectedStoreId = userData.default_store_id;
 
 	const paymentOptions = [
 		{
@@ -66,9 +66,9 @@
 
 	let billFetchStatus: boolean;
 
-	function fetchStoreProducts() {
-		const reqUrl = DOMAIN + `/store_product/v1/${org_id}/store/${store_id}`;
-		defaultHttpRequest<StoreProduct[]>(
+	async function fetchStoreProducts() {
+		const reqUrl = DOMAIN + `/store_product/v1/${orgId}/store/${selectedStoreId}`;
+		await defaultHttpRequest<StoreProduct[]>(
 			HttpMethod.GET,
 			reqUrl,
 			undefined,
@@ -89,13 +89,41 @@
 		});
 	}
 
-	onMount(async () => {
-		const userAuthData = $authData;
-		if (userAuthData.org_id && userAuthData.user_id) {
-			org_id = userAuthData.org_id;
-			user_id = userAuthData.user_id;
+	interface Store {
+		id: string;
+		org_id: string;
+		name: string;
+	}
+
+	let otherStoreOptions: {
+		name: string;
+		value: string;
+	}[] = [];
+
+	async function handleOnChange() {
+		await fetchStoreProducts();
+		selectedProduct = '';
+	}
+
+	async function loadStores() {
+		const stores = await defaultHttpRequest<Store[]>(
+			HttpMethod.GET,
+			`https://kori-backend.azurewebsites.net/store/v1/${orgId}`
+		);
+		otherStoreOptions.length = 0;
+		for (const store of stores) {
+			otherStoreOptions.push({ name: store.id, value: store.name });
 		}
-		fetchStoreProducts();
+		otherStoreOptions = otherStoreOptions;
+	}
+
+	onMount(async () => {
+		if (userData.org_id && userData.user_id) {
+			orgId = userData.org_id;
+			userId = userData.user_id;
+		}
+		await loadStores();
+		await fetchStoreProducts();
 	});
 
 	function renderTable() {
@@ -225,9 +253,9 @@
 			});
 
 		let billingRequestBody = {
-			org_id,
-			store_id,
-			user_id,
+			orgId,
+			selectedStoreId,
+			userId,
 			customer_id: customerObject.id,
 			products_billed,
 			payment_method: billOptions.payment_method
@@ -270,7 +298,7 @@
 	}
 
 	async function submit() {
-		const billingUrl = DOMAIN + `/customer_bill/v1/${org_id}`;
+		const billingUrl = DOMAIN + `/customer_bill/v1/${orgId}`;
 
 		const requestBody = await getBillingRequestBody();
 		if (requestBody == undefined) {
@@ -305,6 +333,14 @@
 					label="Select Product"
 					options={storeProductNames}
 					bind:value={selectedProduct}
+				/>
+			</div>
+			<div class="float-left mb-5">
+				<Select
+					{handleOnChange}
+					label="Select Store : "
+					options={otherStoreOptions}
+					bind:selectedOption={selectedStoreId}
 				/>
 			</div>
 			<div class="float-right mb-5">
