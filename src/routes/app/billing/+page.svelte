@@ -123,6 +123,9 @@
 
 		if (selectedProductObject.selected) {
 			notifications.danger('The selected product is already in the bill');
+		}
+		if (selectedProductQty <= 0) {
+			notifications.danger('Product quantity must be positive');
 			return;
 		}
 		if (selectedProductObject.stock_available < selectedProductQty) {
