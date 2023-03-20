@@ -290,11 +290,11 @@
 	}
 </script>
 
-<div class=" h-screen flex ...">
-	<div class="my-auto ...">
+<div class="flex p-10 ...">
+	<div class="my-auto mx-auto ...">
 		<Table {rowValues} {columnNames} />
 
-		<div class="mx-auto w-3/5 mt-4 ...">
+		<div class="mx-auto w-full mt-4 ...">
 			<div class="float-right mb-5">
 				<label>Total: {productTotal.toFixed(2)}</label>
 			</div>
@@ -379,6 +379,7 @@
 
 			{#if membershipPoints}
 				<div class="float-left mb-5">
+					<!-- svelte-ignore a11y-label-has-associated-control -->
 					<label>
 						Membership Points: {membershipPoints}
 					</label>
@@ -386,6 +387,7 @@
 			{/if}
 
 			<div class="float-right mb-5">
+				<!-- svelte-ignore a11y-label-has-associated-control -->
 				<label>
 					Net Total: {(
 						parseFloat(productTotal) -

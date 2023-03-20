@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let buttonText: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	export let onClick: (event?: Event) => any;
+	export let onClick: (event?: Event) => any = () => void 0;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->

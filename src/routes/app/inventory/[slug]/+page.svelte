@@ -120,75 +120,68 @@
 </script>
 
 {#if productData}
-	<div class=" h-screen ...">
-		<div on:click={() => goto('/app/inventory/')} style="cursor: pointer">&lt;-Back</div>
+	<div>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<div class="float-right text-center ml-10.5 ..." />
+		<div on:click={() => goto('/app/inventory/')} class="hover:cursor-pointer w-24 mt-2 ml-2">
+			<Button buttonText="Go Back" />
+		</div>
 
-		<div class="my-auto ...">
-			<div class="mx-auto w-3/5 mt-4 mb-2 ...">
-				<div class="clear-both mb-4" />
-				<table>
-					<thead>
-						<tr>
-							<th style="width: 150%" colspan="2" align="left"
-								>Product ID: {productData.product_id}</th
-							>
-							<th>
-								<div class="float-right w-20 text-center ml-10.5 ...">
-									<Button buttonText="Edit" onClick={toggleDisabled} />
-								</div>
-							</th>
-						</tr>
-					</thead>
-					<br />
-					<tbody>
-						<tr>
-							<td>
-								<div class="float-left mr-32 ...">
-									<p>Product Name</p>
-									<TextInput bind:value={productData.name} {disabled} placeholder="Enter name" />
-								</div>
-							</td>
-							<td>
-								<div class="float-left mr-32 ...">
-									<p>Measurement Unit</p>
-									<TextInput
-										bind:value={productData.measurement_unit}
-										{disabled}
-										placeholder="Enter Measurement Unit"
-									/>
-								</div>
-							</td>
-							<td>
-								<div class="float-right w-20 text-center mr-10.5 ...">
-									<Button buttonText="Delete" onClick={deleteProduct} />
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="clear-both mb-4 ...">
-									<p>Price</p>
-									<TextInput bind:value={productData.price} {disabled} placeholder="Enter Price" />
-								</div>
-							</td>
-							<td>
-								<div class="float-left mr-32 ...">
-									<p>Reorder Level</p>
-									<TextInput
-										value={productData.reorder_level}
-										disabled="False"
-										placeholder="Enter reorder level"
-									/>
-								</div>
-							</td>
-							<td>
-								<div class="float-right w-20 text-center ml-10.5 ..." hidden={disabled}>
-									<Button buttonText="Save" onClick={editProduct} />
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="mx-auto my-auto w-3/4 ...">
+			<div class="mx-auto mt-4 mb-2 grid grid-cols-3 gap-4 ...">
+				<p class="font-bold col-span-2 ...">Product ID: {productData.product_id}</p>
+
+				<div class="text-center ...">
+					<div class="w-20 float-right ml-2 ..." hidden={disabled}>
+						<Button buttonText="Save" onClick={editProduct} />
+					</div>
+					<div class="w-20 float-right">
+						<Button buttonText="Edit" onClick={toggleDisabled} />
+					</div>
+					<div class="w-20 float-right mr-2">
+						<Button buttonText="Delete" onClick={deleteProduct} />
+					</div>
+				</div>
+
+				<div class="col-span-2 ...">
+					<TextInput
+						label="Product Name"
+						bind:value={productData.name}
+						{disabled}
+						placeholder="Enter name"
+					/>
+				</div>
+
+				<div>
+					<div class="float-right">
+						<TextInput
+							label="Measurement Unit"
+							bind:value={productData.measurement_unit}
+							{disabled}
+							placeholder="Enter Measurement Unit"
+						/>
+					</div>
+				</div>
+
+				<div class="col-span-2 ...">
+					<TextInput
+						label="Price"
+						bind:value={productData.price}
+						{disabled}
+						placeholder="Enter Price"
+					/>
+				</div>
+
+				<div>
+					<div class="float-right">
+						<TextInput
+							label="Reorder Level"
+							value={productData.reorder_level}
+							disabled={false}
+							placeholder="Enter reorder level"
+						/>
+					</div>
+				</div>
 			</div>
 			<Table rowValues={productTableEntries} columnNames={productTableColNames} />
 		</div>

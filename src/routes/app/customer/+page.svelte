@@ -57,10 +57,10 @@
 	onMount(async () => loadCustomers());
 </script>
 
-<div class="h-screen flex ...">
-	<div class="my-auto ...">
-		<div class="mx-auto w-4/5 mt-4 mb-2 ...">
-			<div class="float-left ...">
+<div class="flex ...">
+	<div class="my-auto mx-auto w-3/4 ...">
+		<div class="mx-auto w-full mt-4 mb-2 ...">
+			<div class="float-left mr-4 ...">
 				<TextInput bind:this={searchTextField} placeholder="Search Customers" />
 			</div>
 

@@ -54,10 +54,10 @@
 	onMount(async () => loadProducts());
 </script>
 
-<div class=" h-screen flex ...">
-	<div class="my-auto ...">
-		<div class="mx-auto w-3/5 mt-4 mb-2 ...">
-			<div class="float-left ...">
+<div class="flex ...">
+	<div class="my-auto mx-auto w-3/4 ...">
+		<div class="mx-auto mt-4 mb-2 ...">
+			<div class="float-left mr-4 ...">
 				<TextInput
 					bind:this={searchTextField}
 					label="Search Products"
@@ -75,7 +75,7 @@
 			<div class="clear-both" />
 		</div>
 		<table
-			class="font-sans mx-auto table-fixed border-collapse border overflow-auto w-4/5 rounded-sm font-light ..."
+			class="font-sans mx-auto table-auto border-collapse border overflow-auto w-full rounded-sm font-light ..."
 		>
 			<thead>
 				<tr class="bg-teal-600 text-white border ...">
