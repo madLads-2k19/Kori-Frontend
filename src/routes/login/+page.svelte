@@ -18,8 +18,7 @@
 		defaultHttpRequest<AuthData>(
 			HttpMethod.POST,
 			`https://kori-backend.azurewebsites.net/user/v1/login`,
-			payload,
-			undefined
+			payload
 		)
 			.then((data) => {
 				loginStatus = true;
@@ -28,7 +27,8 @@
 			})
 			.catch((error) => {
 				loginStatus = false;
-				console.log(error);
+				authData.set({});
+				console.error(error);
 			});
 	}
 </script>
