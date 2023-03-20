@@ -5,10 +5,10 @@
 </script>
 
 <table
-	class="font-sans mx-auto table-fixed border-collapse border overflow-auto w-4/5 rounded-sm font-light ..."
+	class="font-sans mx-auto table-auto border-collapse border overflow-auto w-full rounded-sm font-light ..."
 >
 	<thead>
-		<tr class="bg-teal-600 text-white border ...">
+		<tr class="bg-teal-500 text-white border ...">
 			{#each columnNames as columnName}
 				<th>{columnName}</th>
 			{/each}
