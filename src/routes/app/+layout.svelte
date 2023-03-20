@@ -46,19 +46,19 @@
 	<div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
 		<div class="text-sm lg:flex-grow">
 			<a
-				href="billing"
+				href="http://localhost:5173/app/billing"
 				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold mr-4"
 			>
 				New Billing
 			</a>
 			<a
-				href="inventory"
+				href="http://localhost:5173/app/inventory"
 				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold mr-4"
 			>
 				Inventory
 			</a>
 			<a
-				href="customer"
+				href="http://localhost:5173/app/customer"
 				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold"
 			>
 				Customers
