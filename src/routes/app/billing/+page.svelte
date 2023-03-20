@@ -318,11 +318,19 @@
 	}
 </script>
 
-<div class=" h-screen flex ...">
-	<div class="my-auto ...">
+<div class=" flex pt-5 ...">
+	<div class="my-auto mx-auto w-3/4 ...">
+		<div class="float-left mb-5">
+			<Select
+				{handleOnChange}
+				label="Select Store : "
+				options={otherStoreOptions}
+				bind:selectedOption={selectedStoreId}
+			/>
+		</div>
 		<Table {rowValues} {columnNames} />
 
-		<div class="mx-auto w-3/5 mt-4 ...">
+		<div class="mx-auto mt-4 ...">
 			<div class="float-right mb-5">
 				<label>Total: {productTotal.toFixed(2)}</label>
 			</div>
@@ -335,14 +343,7 @@
 					bind:value={selectedProduct}
 				/>
 			</div>
-			<div class="float-left mb-5">
-				<Select
-					{handleOnChange}
-					label="Select Store : "
-					options={otherStoreOptions}
-					bind:selectedOption={selectedStoreId}
-				/>
-			</div>
+
 			<div class="float-right mb-5">
 				<Button buttonText="Add Item" onClick={addItem} />
 			</div>
@@ -364,7 +365,7 @@
 
 			<div class="clear-both ..." />
 
-			<div class="float-left mb-10 mr-10 ...">
+			<div class="float-left mb-5 mr-10 ...">
 				<TextInput
 					{handleKeyDown}
 					placeholder="10 digit number"

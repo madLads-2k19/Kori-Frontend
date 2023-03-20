@@ -68,19 +68,20 @@
 			];
 			customerTableEntries.push(customerEntry);
 		}
+		console.log(customerTableEntries);
 	}
 
 	onMount(async () => loadCustomers());
 </script>
 
-<div class="h-screen flex ...">
-	<div class="my-auto ...">
-		<div class="mx-auto w-4/5 mt-4 mb-2 ...">
-			<div class="float-left ...">
+<div class=" flex pt-5 ...">
+	<div class="my-auto mx-auto w-3/4 ...">
+		<div class=" mb-2 ...">
+			<div class="float-left m-2 ...">
 				<TextInput bind:this={searchTextField} placeholder="Search Customers" />
 			</div>
 
-			<div class="float-left ...">
+			<div class="float-left m-1.5 ...">
 				<Button buttonText="Search" onClick={loadCustomers} />
 			</div>
 			{#if selectedCustomer}
