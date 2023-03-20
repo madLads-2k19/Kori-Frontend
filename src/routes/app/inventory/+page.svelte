@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import Button from '$lib/components/Button.svelte';
+	import Table from '$lib/components/Table.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import { HttpMethod, defaultHttpRequest } from '$lib/request';
+	import { HttpMethod, defaultHttpRequest, type QueryParams } from '$lib/request';
 	import Modal from 'svelte-simple-modal';
 	import AddProduct from './AddInventory.svelte';
 	import { goto } from '$app/navigation';
@@ -14,7 +14,6 @@
 
 	const productTableEntries: (string | number | bigint | Date)[][] = [];
 
-	let searchTextField: TextInput;
 	interface Product {
 		product_id: string;
 		version_id: string;
@@ -26,9 +25,9 @@
 		timestamp: Date;
 	}
 
-	let productsBuffered = null;
+	let productsBuffered: Product[] = [];
 
-	function redirectFunction(row) {
+	function redirectToProductSubPage(row: number) {
 		goto('/app/inventory/' + productsBuffered[row[0] - 1].product_id);
 	}
 
@@ -38,7 +37,6 @@
 		const products = await defaultHttpRequest<Product[]>(
 			HttpMethod.GET,
 			`https://kori-backend.azurewebsites.net/product/v1/organization/${orgId}`,
-			undefined
 		);
 		productsBuffered = products;
 
@@ -56,19 +54,9 @@
 	onMount(async () => loadProducts());
 </script>
 
-<div class=" h-screen flex ...">
-	<div class="my-auto ...">
-		<div class="mx-auto w-3/5 mt-4 mb-2 ...">
-			<div class="float-left ...">
-				<TextInput
-					bind:this={searchTextField}
-					label="Search Products"
-					placeholder="Search Product"
-				/>
-			</div>
-			<div class="float-left ...">
-				<Button buttonText="Search" onClick={loadProducts} />
-			</div>
+<div class=" flex pt-5 ...">
+	<div class="my-auto mx-auto w-3/4 ...">
+		<div class=" mt-4 mb-2 ...">
 			{#if permissionLevel == 'admin'}
 				<div class="float-right ...">
 					<Modal>
@@ -78,41 +66,7 @@
 			{/if}
 			<div class="clear-both" />
 		</div>
-		<table
-			class="font-sans mx-auto table-fixed border-collapse border overflow-auto w-4/5 rounded-sm font-light ..."
-		>
-			<thead>
-				<tr class="bg-teal-600 text-white border ...">
-					{#each productTableColNames as columnName}
-						<th>{columnName}</th>
-					{/each}
-				</tr>
-			</thead>
-			<tbody>
-				{#each productTableEntries as row}
-					<tr
-						class="odd:bg-teal-50 hover:bg-teal-100 ..."
-						on:click={() => redirectFunction(row)}
-						style="cursor: pointer"
-					>
-						{#each row as rowValue}
-							<td>{rowValue}</td>
-						{/each}
-					</tr>
-				{/each}
-			</tbody>
-		</table>
 
-		<style>
-			th {
-				padding: 0.3em;
-				text-align: center;
-			}
-
-			td {
-				padding: 0.3em;
-				text-align: center;
-			}
-		</style>
+		<Table handleRowSelect={redirectToProductSubPage} rowValues={productTableEntries} columnNames={productTableColNames} />
 	</div>
 </div>
