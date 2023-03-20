@@ -8,6 +8,7 @@
 	export let label: string;
 
 	export let selectedOption: string;
+	export let handleOnChange = () => {};
 </script>
 
 <label
@@ -19,6 +20,7 @@
 		name="pets"
 		id="pet-select"
 		bind:value={selectedOption}
+		on:change={handleOnChange}
 	>
 		{#each options as option}
 			<option value={option.name}>{option.value}</option>
