@@ -33,11 +33,11 @@
 	}
 
 	async function loadProducts() {
-		const orgID: string = '77b5028d-5082-4dab-bdba-3fdc3fa35509';
+		const orgId = userData.org_id;
 
 		const products = await defaultHttpRequest<Product[]>(
 			HttpMethod.GET,
-			`https://kori-backend.azurewebsites.net/product/v1/organization/${orgID}`,
+			`https://kori-backend.azurewebsites.net/product/v1/organization/${orgId}`,
 			undefined
 		);
 		productsBuffered = products;
