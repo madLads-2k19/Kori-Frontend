@@ -6,6 +6,9 @@
 	import { onMount } from 'svelte';
 	import { defaultHttpRequest, HttpMethod } from '../../../../lib/request';
 	import { goto } from '$app/navigation';
+	import { userData } from '$lib/localStore';
+
+	const permissionLevel = userData.permission_level;
 
 	const productTableColNames: string[] = [
 		'#',
@@ -32,16 +35,16 @@
 	}
 
 	async function loadProducts() {
-		const orgID: string = '77b5028d-5082-4dab-bdba-3fdc3fa35509';
+		const orgId = userData.org_id;
 
 		let products = await defaultHttpRequest<Product[]>(
 			HttpMethod.GET,
-			`https://kori-backend.azurewebsites.net/store_product/v1/${orgID}/product/${data.productId}`,
+			`https://kori-backend.azurewebsites.net/store_product/v1/${orgId}/product/${data.productId}`,
 			undefined
 		);
 		const stores = await defaultHttpRequest<Store[]>(
 			HttpMethod.GET,
-			`https://kori-backend.azurewebsites.net/store/v1/${orgID}`,
+			`https://kori-backend.azurewebsites.net/store/v1/${orgId}`,
 			undefined
 		);
 		let store_id_name_mapping = {};
@@ -132,11 +135,13 @@
 							<th style="width: 150%" colspan="2" align="left"
 								>Product ID: {productData.product_id}</th
 							>
-							<th>
-								<div class="float-right w-20 text-center ml-10.5 ...">
-									<Button buttonText="Edit" onClick={toggleDisabled} />
-								</div>
-							</th>
+							{#if permissionLevel == 'admin'}
+								<th>
+									<div class="float-right w-20 text-center ml-10.5 ...">
+										<Button buttonText="Edit" onClick={toggleDisabled} />
+									</div>
+								</th>
+							{/if}
 						</tr>
 					</thead>
 					<br />
@@ -158,11 +163,13 @@
 									/>
 								</div>
 							</td>
-							<td>
-								<div class="float-right w-20 text-center mr-10.5 ...">
-									<Button buttonText="Delete" onClick={deleteProduct} />
-								</div>
-							</td>
+							{#if permissionLevel == 'admin'}
+								<td>
+									<div class="float-right w-20 text-center mr-10.5 ...">
+										<Button buttonText="Delete" onClick={deleteProduct} />
+									</div>
+								</td>
+							{/if}
 						</tr>
 						<tr>
 							<td>
