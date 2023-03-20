@@ -20,7 +20,7 @@
 	}
 </script>
 
-<nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
+<nav class="flex items-center justify-between flex-wrap bg-teal-500 p-2">
 	<div class="flex items-center flex-shrink-0 text-white mr-6">
 		<svg
 			class="fill-current h-8 w-8 mr-2"
@@ -47,28 +47,30 @@
 		<div class="text-sm lg:flex-grow">
 			<a
 				href="/app/billing"
-				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold mr-4"
+				class="block mt-4 lg:inline-block lg:mt-0 text-teal-100 hover:text-white hover:font-bold mr-4"
 			>
 				New Billing
 			</a>
 			<a
 				href="/app/inventory"
-				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold mr-4"
+				class="block mt-4 lg:inline-block lg:mt-0 text-teal-100 hover:text-white hover:font-bold mr-4"
 			>
 				Inventory
 			</a>
 			<a
 				href="/app/customer"
-				class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white hover:font-bold"
+				class="block mt-4 lg:inline-block lg:mt-0 text-teal-100 hover:text-white hover:font-bold"
 			>
 				Customers
 			</a>
 		</div>
-		<div>
-			<p class="block mt-4 lg:inline-block lg:mt-0 mr-3 ...">
-				User Name: {userName}
+		<div class="flex">
+			<p class="block mt-4 text-teal-100 font-bold lg:inline-block lg:mt-2 mr-3 ...">
+				User: {userName}
 			</p>
+			<div>
 			<Button buttonText="Logout" onClick={logout} />
+			</div>
 		</div>
 	</div>
 </nav>
