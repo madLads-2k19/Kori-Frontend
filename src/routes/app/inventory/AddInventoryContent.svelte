@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
+	import { userData } from '$lib/localStore';
 
 	let reorder_level: number;
 	let name: string;
@@ -13,21 +14,19 @@
 	let retry: boolean = false;
 	function addProduct() {
 		disableSubmit = true;
-		fetch(
-			'https://kori-backend.azurewebsites.net/product/v1/77b5028d-5082-4dab-bdba-3fdc3fa35509',
-			{
-				method: 'POST',
-				headers: {
-					'Content-type': 'application/json'
-				},
-				body: JSON.stringify({
-					reorder_level,
-					name,
-					price,
-					measurement_unit
-				})
-			}
-		).then((response) => {
+		const orgId = userData.org_id;
+		fetch(`https://kori-backend.azurewebsites.net/product/v1/${orgId}`, {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json'
+			},
+			body: JSON.stringify({
+				reorder_level,
+				name,
+				price,
+				measurement_unit
+			})
+		}).then((response) => {
 			if (response.status == 200) {
 				productCreationSuccess = true;
 				retry = false;

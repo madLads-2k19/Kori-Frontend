@@ -7,7 +7,9 @@
 	import Modal from 'svelte-simple-modal';
 	import AddProduct from './AddInventory.svelte';
 	import { goto } from '$app/navigation';
+	import { userData } from '$lib/localStore';
 
+	const permissionLevel = userData.permission_level;
 	const productTableColNames: string[] = ['#', 'Name', 'Price', 'Measurement Unit'];
 
 	const productTableEntries: (string | number | bigint | Date)[][] = [];
@@ -67,11 +69,13 @@
 			<div class="float-left ...">
 				<Button buttonText="Search" onClick={loadProducts} />
 			</div>
-			<div class="float-right ...">
-				<Modal>
-					<AddProduct />
-				</Modal>
-			</div>
+			{#if permissionLevel == 'admin'}
+				<div class="float-right ...">
+					<Modal>
+						<AddProduct />
+					</Modal>
+				</div>
+			{/if}
 			<div class="clear-both" />
 		</div>
 		<table

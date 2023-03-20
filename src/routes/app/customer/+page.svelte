@@ -9,6 +9,9 @@
 	import Modal from 'svelte-simple-modal';
 	import AddCustomer from './AddCustomer.svelte';
 	import type { Customer } from '../billing/models';
+	import { userData } from '$lib/localStore';
+	import { notifications } from '$lib/components/notification';
+	import EditCustomer from './EditCustomer.svelte';
 
 	const customerTableColNames: string[] = [
 		'#',
@@ -22,9 +25,24 @@
 	const customerTableEntries: (string | number)[][] = [];
 
 	let searchTextField: TextInput;
+	let selectedCustomer: Customer;
+
+	async function handleRowSelect(row) {
+		const phoneNumber = row[1];
+		await defaultHttpRequest<Customer>(
+			HttpMethod.GET,
+			`https://kori-backend.azurewebsites.net/customer/v1/number/${phoneNumber}`
+		)
+			.then((customerObject) => {
+				selectedCustomer = customerObject;
+			})
+			.catch((error) => {
+				notifications.danger('Failed to fetch customer');
+			});
+	}
 
 	async function loadCustomers() {
-		const orgId: string = '77b5028d-5082-4dab-bdba-3fdc3fa35509';
+		const orgId: string = userData.org_id;
 		const params: QueryParams = {};
 		if (searchTextField.value) {
 			params['customer_name'] = searchTextField.value;
@@ -48,10 +66,8 @@
 				cust.membership_points,
 				cust.email
 			];
-			console.log(customerEntry);
 			customerTableEntries.push(customerEntry);
 		}
-		console.log(customerTableEntries);
 	}
 
 	onMount(async () => loadCustomers());
@@ -67,6 +83,13 @@
 			<div class="float-left ...">
 				<Button buttonText="Search" onClick={loadCustomers} />
 			</div>
+			{#if selectedCustomer}
+				<div class="float-right ...">
+					<Modal>
+						<EditCustomer customer={selectedCustomer} />
+					</Modal>
+				</div>
+			{/if}
 			<div class="float-right ...">
 				<Modal>
 					<AddCustomer />
@@ -74,6 +97,6 @@
 			</div>
 			<div class="clear-both" />
 		</div>
-		<Table rowValues={customerTableEntries} columnNames={customerTableColNames} />
+		<Table {handleRowSelect} rowValues={customerTableEntries} columnNames={customerTableColNames} />
 	</div>
 </div>

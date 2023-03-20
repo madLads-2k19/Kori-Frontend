@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
-	import { authData } from '$lib/store';
 	import { onMount } from 'svelte';
 	import Table from '$lib/components/Table.svelte';
 	import type { CustomerBill } from './models';
+	import { userData } from '$lib/localStore';
 
 	const billTableColumns: string[] = ['S.no', 'Item', 'Price', 'Quantity', 'Amount'];
 	const billTableEntries: (string | number)[][] = [];
@@ -19,10 +19,10 @@
 	export let customerBillId = '';
 
 	onMount(async () => {
-		const userData = $authData;
+		const orgId = userData.org_id;
 		await defaultHttpRequest<CustomerBill>(
 			HttpMethod.GET,
-			`https://kori-backend.azurewebsites.net/customer_bill/v1/${userData.org_id}/${customerBillId}`,
+			`https://kori-backend.azurewebsites.net/customer_bill/v1/${orgId}/${customerBillId}`,
 			undefined,
 			undefined
 		)

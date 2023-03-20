@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let columnNames: string[];
-
 	export let rowValues: (string | number)[][];
+	export let handleRowSelect = (row) => {};
 </script>
 
 <table
@@ -16,7 +16,7 @@
 	</thead>
 	<tbody>
 		{#each rowValues as row}
-			<tr class="odd:bg-teal-50 hover:bg-teal-100 ...">
+			<tr on:click={() => handleRowSelect(row)} class="odd:bg-teal-50 hover:bg-teal-100 ...">
 				{#each row as rowValue}
 					<td>{rowValue}</td>
 				{/each}
