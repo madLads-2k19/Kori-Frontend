@@ -5,12 +5,20 @@
 	import type { AuthData } from '$lib/store';
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	let name: string = '';
 	let email: string = '';
 	let password: string = '';
 	let orgId: string = '';
 	let loginStatus: boolean | undefined = undefined;
+
+	onMount(async () => {
+		const userData = $authData;
+		if (userData.token) {
+			goto('/login');
+		}
+	});
 
 	function register() {
 		const payload = {
