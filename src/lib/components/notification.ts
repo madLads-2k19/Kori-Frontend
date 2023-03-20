@@ -33,10 +33,10 @@ function createNotificationStore(timeout = TIMEOUT) {
 		subscribe,
 		send,
 		default: (msg: String, timeout = TIMEOUT) => send(msg, 'default', timeout),
-		danger: (msg: String, timeout = TIMEOUT)=> send(msg, 'danger', timeout),
-		warning: (msg: String, timeout = TIMEOUT)=> send(msg, 'warning', timeout),
-		info: (msg: String, timeout = TIMEOUT)=> send(msg, 'info', timeout),
-		success: (msg: String, timeout = TIMEOUT)=> send(msg, 'success', timeout)
+		danger: (msg: String, timeout = TIMEOUT) => send(msg, 'danger', timeout),
+		warning: (msg: String, timeout = TIMEOUT) => send(msg, 'warning', timeout),
+		info: (msg: String, timeout = TIMEOUT) => send(msg, 'info', timeout),
+		success: (msg: String, timeout = TIMEOUT) => send(msg, 'success', timeout)
 	};
 }
 

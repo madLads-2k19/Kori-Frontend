@@ -1,5 +1,23 @@
 <script lang="ts">
-	export let user = 'Mechy';
+	import { goto } from '$app/navigation';
+	import Button from '$lib/components/Button.svelte';
+	import { authData } from '$lib/store';
+	import { onMount } from 'svelte';
+
+	let userName: string | undefined = '';
+
+	onMount(() => {
+		const userData = $authData;
+		if (!userData.token) {
+			goto('/login');
+		}
+		userName = userData.name;
+	});
+
+	function logout() {
+		authData.set({});
+		goto('/login');
+	}
 </script>
 
 <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
@@ -48,13 +66,9 @@
 		</div>
 		<div>
 			<p class="block mt-4 lg:inline-block lg:mt-0 mr-3 ...">
-				User ID: {user}
+				User Name: {userName}
 			</p>
-			<a
-				href="/login"
-				class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-				>Logout</a
-			>
+			<Button buttonText="Logout" onClick={logout} />
 		</div>
 	</div>
 </nav>

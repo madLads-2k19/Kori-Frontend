@@ -29,12 +29,12 @@ function convertQueryParams(params: QueryParams): string[][] {
 	return result;
 }
 
-function defaultClientErrorHandler (response: Response) {
-	response.json().then((body) => notifications.warning(body['detail'], 3000))
+function defaultClientErrorHandler(response: Response) {
+	response.json().then((body) => notifications.warning(body['detail'], 3000));
 }
 
-function defaultServerErrorHandler (response: Response) {
-	notifications.warning('Something went brrrr', 3000)
+function defaultServerErrorHandler(response: Response) {
+	notifications.warning('Something went brrrr', 3000);
 }
 
 export async function httpRequest<T>(
@@ -92,8 +92,16 @@ export function authenticatedHttpRequest<T>(
 		throw new Error(`Invalid Token: ${authenticationData.token}`);
 	}
 
-	requestHeaders['Authorization'] = `BEARER ${authenticationData.token}`;
-	return httpRequest(method, url, body, queryParams, headers, clientErrorHandler, serverErrorHandler);
+	requestHeaders['Authorization'] = `Bearer ${authenticationData.token}`;
+	return httpRequest(
+		method,
+		url,
+		body,
+		queryParams,
+		requestHeaders,
+		clientErrorHandler,
+		serverErrorHandler
+	);
 }
 
 export function defaultHttpRequest<T>(
@@ -105,5 +113,13 @@ export function defaultHttpRequest<T>(
 	clientErrorHandler: (resp: Response) => any = defaultClientErrorHandler,
 	serverErrorHandler: (resp: Response) => any = defaultServerErrorHandler
 ): Promise<T> {
-	return httpRequest(method, url, body, queryParams, headers, clientErrorHandler, serverErrorHandler);
+	return httpRequest(
+		method,
+		url,
+		body,
+		queryParams,
+		headers,
+		clientErrorHandler,
+		serverErrorHandler
+	);
 }
