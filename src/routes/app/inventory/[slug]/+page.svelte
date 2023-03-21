@@ -47,7 +47,7 @@
 		name: string;
 		value: string;
 	}[] = [];
-	var selectedStoreId: string = '';
+	var selectedStoreId: string = userData.default_store_id;
 	const productTableColNames: string[] = ['#', 'Store ID', 'Store Name', 'Stock Available'];
 	const productTableEntries: (string | number)[][] = [];
 
@@ -114,7 +114,7 @@
 			otherStoreOptions.push({ name: storeId, value: storeName });
 		}
 		otherStoreOptions = otherStoreOptions;
-		selectedStoreId = '';
+		selectedStoreId = otherStoreOptions[0]["name"];
 	}
 
 	let productEditDisabled = true;
@@ -180,6 +180,7 @@
 		}
 		await loadProducts();
 		await render();
+		notifications.success("Product added to store");
 	}
 </script>
 
