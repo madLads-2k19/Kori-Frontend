@@ -2,6 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import { userData } from '$lib/localStore';
+	import { notifications } from '$lib/components/notification';
 
 	let reorder_level: number;
 	let name: string;
@@ -12,20 +13,51 @@
 	let productCreationSuccess: boolean = false;
 
 	let retry: boolean = false;
+	function validate(productDetails) {
+		console.log(productDetails);
+		if (!productDetails.name || (productDetails.name && productDetails.name.trim().length == 0)) {
+			notifications.danger('Product name cannot be empty');
+			return false;
+		}
+		if (productDetails.price <= 0) {
+			notifications.danger('Product selling price must be a positive value');
+			return false;
+		}
+		if (productDetails.reorder_level <= 0) {
+			notifications.danger('Product reorder level must be a positive value');
+			return false;
+		}
+		if (
+			!productDetails.measurement_unit ||
+			(productDetails.measurement_unit && productDetails.measurement_unit.trim().length == 0)
+		) {
+			notifications.danger('Product measurement unit cannot be empty');
+			return false;
+		}
+		return true;
+	}
+
 	function addProduct() {
 		disableSubmit = true;
 		const orgId = userData.org_id;
+		const requestObject = {
+			reorder_level,
+			name,
+			price,
+			measurement_unit
+		};
+
+		if (!validate(requestObject)) {
+			disableSubmit = false;
+			return;
+		}
+
 		fetch(`https://kori-backend.azurewebsites.net/product/v1/${orgId}`, {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json'
 			},
-			body: JSON.stringify({
-				reorder_level,
-				name,
-				price,
-				measurement_unit
-			})
+			body: JSON.stringify(requestObject)
 		}).then((response) => {
 			if (response.status == 200) {
 				productCreationSuccess = true;
