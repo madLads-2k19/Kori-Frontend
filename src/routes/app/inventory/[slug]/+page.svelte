@@ -106,9 +106,7 @@
 			}
 		}
 
-		for (var key in otherStoreOptions) {
-			delete otherStoreOptions[key];
-		}
+		otherStoreOptions.length = 0
 		for (const storeId of unMappedStoreId) {
 			const storeName = storeIdToNameMap[storeId];
 			otherStoreOptions.push({ name: storeId, value: storeName });
