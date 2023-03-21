@@ -91,7 +91,7 @@
 					</Modal>
 				</div>
 			{/if}
-			<div class="float-right ...">
+			<div class="float-right mr-2 ...">
 				<Modal>
 					<AddCustomer />
 				</Modal>
