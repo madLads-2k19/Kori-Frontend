@@ -8,6 +8,7 @@
 	import type { Customer } from '../billing/models';
 	import { authData, type AuthData } from '$lib/store';
 	import { onMount } from 'svelte';
+	import { notifications } from '$lib/components/notification';
 
 	export let customer: Customer;
 
@@ -36,6 +37,56 @@
 
 	let retry: boolean = false;
 
+	// For typing
+	interface Customer {
+		email: string;
+		is_member: boolean;
+		membership_points: number;
+		address: string;
+		preferred_payment_method: string;
+		name: string;
+		phone_number: string;
+	}
+
+	function validate(customerDetails: Customer) {
+		console.log(customerDetails);
+		if (
+			!customerDetails.name ||
+			(customerDetails.name && customerDetails.name.trim().length == 0)
+		) {
+			notifications.danger('Customer name cannot be empty');
+			return false;
+		}
+		if (customerDetails.membership_points < 0) {
+			notifications.danger('Membership points must be a positive value');
+			return false;
+		}
+		if (
+			!customerDetails.phone_number.match(
+				/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+			)
+		) {
+			notifications.danger('Customer phone number is not valid');
+			return false;
+		}
+		if (
+			!customerDetails.email.match(
+				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			)
+		) {
+			notifications.danger('Customer email is not valid');
+			return false;
+		}
+		if (
+			!customerDetails.address ||
+			(customerDetails.address && customerDetails.address.trim().length == 0)
+		) {
+			notifications.danger('Customer address cannot be empty');
+			return false;
+		}
+		return true;
+	}
+
 	onMount(async () => {
 		userData = $authData;
 	});
@@ -52,6 +103,11 @@
 			preferred_payment_method,
 			membership_points
 		};
+
+		if (!validate(payload)) {
+			disableSubmit = false;
+			return;
+		}
 
 		await defaultHttpRequest<Customer>(
 			HttpMethod.PUT,
