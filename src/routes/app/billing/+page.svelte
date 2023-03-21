@@ -68,6 +68,7 @@
 
 	async function fetchStoreProducts() {
 		const reqUrl = DOMAIN + `/store_product/v1/${orgId}/store/${selectedStoreId}`;
+		storeProductNames = [];
 		await defaultHttpRequest<StoreProduct[]>(
 			HttpMethod.GET,
 			reqUrl,
