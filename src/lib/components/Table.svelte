@@ -16,7 +16,10 @@
 	</thead>
 	<tbody>
 		{#each rowValues as row}
-			<tr on:click={() => handleRowSelect(row)} class="odd:bg-teal-50 hover:bg-teal-100 cursor-pointer ...">
+			<tr
+				on:click={() => handleRowSelect(row)}
+				class="odd:bg-teal-50 hover:bg-teal-100 cursor-pointer ..."
+			>
 				{#each row as rowValue}
 					<td>{rowValue}</td>
 				{/each}

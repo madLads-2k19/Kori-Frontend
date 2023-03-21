@@ -36,7 +36,7 @@
 
 		const products = await defaultHttpRequest<Product[]>(
 			HttpMethod.GET,
-			`https://kori-backend.azurewebsites.net/product/v1/organization/${orgId}`,
+			`https://kori-backend.azurewebsites.net/product/v1/organization/${orgId}`
 		);
 		productsBuffered = products;
 
@@ -67,6 +67,10 @@
 			<div class="clear-both" />
 		</div>
 
-		<Table handleRowSelect={redirectToProductSubPage} rowValues={productTableEntries} columnNames={productTableColNames} />
+		<Table
+			handleRowSelect={redirectToProductSubPage}
+			rowValues={productTableEntries}
+			columnNames={productTableColNames}
+		/>
 	</div>
 </div>
