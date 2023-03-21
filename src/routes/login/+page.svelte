@@ -6,6 +6,7 @@
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { notifications } from '$lib/components/notification';
 
 	let email: string = '';
 	let password: string = '';
@@ -18,11 +19,40 @@
 		}
 	});
 
+	interface UserInput {
+		email: string;
+		password: string;
+	}
+
+	function validate(userDetails: UserInput) {
+		console.log(userDetails);
+		if (
+			!userDetails.email.match(
+				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			)
+		) {
+			notifications.danger('Email is not valid');
+			return false;
+		}
+		if (
+			!userDetails.password ||
+			(userDetails.password && userDetails.password.trim().length == 0)
+		) {
+			notifications.danger('Password cannot be empty');
+			return false;
+		}
+
+		return true;
+	}
+
 	function login() {
 		const payload = {
 			email,
 			password
 		};
+
+		if (!validate(payload)) return;
+
 		defaultHttpRequest<AuthData>(
 			HttpMethod.POST,
 			`https://kori-backend.azurewebsites.net/user/v1/login`,

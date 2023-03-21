@@ -6,12 +6,53 @@
 	import { HttpMethod, defaultHttpRequest } from '$lib/request';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { notifications } from '$lib/components/notification';
 
 	let name: string = '';
 	let email: string = '';
 	let password: string = '';
 	let orgId: string = '';
 	let loginStatus: boolean | undefined = undefined;
+
+	interface UserInput {
+		name: string;
+		email: string;
+		password: string;
+		orgId: string;
+	}
+
+	function validate(userDetails: UserInput) {
+		console.log(userDetails);
+		if (!userDetails.name || (userDetails.name && userDetails.name.trim().length == 0)) {
+			notifications.danger('Name cannot be empty');
+			return false;
+		}
+		if (
+			!userDetails.email.match(
+				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			)
+		) {
+			notifications.danger('Email is not valid');
+			return false;
+		}
+		if (
+			!userDetails.password ||
+			(userDetails.password && userDetails.password.trim().length == 0)
+		) {
+			notifications.danger('Password cannot be empty');
+			return false;
+		}
+		if (
+			!userDetails.orgId.match(
+				/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+			)
+		) {
+			notifications.danger('Organisation ID is not a valid UUID');
+			return false;
+		}
+
+		return true;
+	}
 
 	onMount(async () => {
 		const userData = $authData;
@@ -27,6 +68,16 @@
 			password,
 			permission_level: 'user'
 		};
+
+		const validatePayload = {
+			name,
+			email,
+			password,
+			orgId
+		};
+
+		if (!validate(validatePayload)) return;
+
 		defaultHttpRequest<AuthData>(
 			HttpMethod.POST,
 			`https://kori-backend.azurewebsites.net/user/v1/${orgId}/signup`,

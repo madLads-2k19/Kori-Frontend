@@ -114,7 +114,7 @@
 			otherStoreOptions.push({ name: storeId, value: storeName });
 		}
 		otherStoreOptions = otherStoreOptions;
-		selectedStoreId = otherStoreOptions[0]["name"];
+		selectedStoreId = otherStoreOptions[0]['name'];
 	}
 
 	let productEditDisabled = true;
@@ -180,7 +180,7 @@
 		}
 		await loadProducts();
 		await render();
-		notifications.success("Product added to store");
+		notifications.success('Product added to store');
 	}
 </script>
 
