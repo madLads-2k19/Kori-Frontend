@@ -115,6 +115,9 @@
 			otherStoreOptions.push({ name: store.id, value: store.name });
 		}
 		otherStoreOptions = otherStoreOptions;
+		if (stores.length != 0) {
+			selectedStoreId = userData.default_store_id || stores[0].id;
+		}
 	}
 
 	onMount(async () => {
@@ -252,13 +255,18 @@
 				return;
 			});
 
+		if (!selectedStoreId) {
+			notifications.danger('Store not selected');
+			return;
+		}
+
 		let billingRequestBody = {
-			orgId,
-			selectedStoreId,
-			userId,
+			org_id: orgId,
+			store_id: selectedStoreId,
 			customer_id: customerObject.id,
-			products_billed,
-			payment_method: billOptions.payment_method
+			user_id: userId,
+			payment_method: billOptions.payment_method,
+			products_billed
 		};
 
 		if (billOptions.discount_price < 0) {

@@ -69,7 +69,7 @@
 				User: {userName}
 			</p>
 			<div>
-			<Button buttonText="Logout" onClick={logout} />
+				<Button buttonText="Logout" onClick={logout} />
 			</div>
 		</div>
 	</div>
